@@ -59,6 +59,11 @@ AWS CodeBuildから、「ビルドプロジェクト」→「ビルドプロジ�
 ![img5](img/img5.png)
 
 
+Buildspec は下記のように指定します。
+
+![img6](img/img6.png)
+
+
 ビルドプロジェクト作成時に作成した `codebuild-sagemaker-ci-pipeline-xgboost-service-role` へ下記のポリシーを追加します。
 
 - `StepFunctionsFullAccess`
@@ -66,7 +71,7 @@ AWS CodeBuildから、「ビルドプロジェクト」→「ビルドプロジ�
 - `AmazonS3FullAccess`
 - `AWSGlueServiceRole`
     
-下記ポリシーを作成して追加します。
+下記インラインポリシーを作成して追加します。
 ```JSON
 {
 	"Version": "2012-10-17",
@@ -97,15 +102,15 @@ $ git checkout -b model-dev
 - `pipeline.py` 中の下記項目を設定します。
 
 ```Python
-BUCKET='<データを準備した際に保存したバケット>'
-FLOW_NAME='flow_{}'.format(id) 
-TRAINING_JOB_NAME='sf-train-{}'.format(id) # To avoid duplication of job name
+BUCKET = '<データを準備した際に保存したバケット>'
+FLOW_NAME = 'flow_{}'.format(id) 
+TRAINING_JOB_NAME = 'sf-train-{}'.format(id) # To avoid duplication of job name
 GLUE_ROLE = '<Glue に付与するロール>'
 SAGEMAKER_ROLE = '<SageMaker に付与するロール>'
-WORKFLOW_ROLE='<Step Functions に付与するロール>'
+WORKFLOW_ROLE ='<Step Functions に付与するロール>'
 ```
 
-git 上に変更を反映します。
+git 上にて変更を反映します。
 ```Bash
 $ git add pipeline.py
 $ git commit -m “mod pipeline.py”
