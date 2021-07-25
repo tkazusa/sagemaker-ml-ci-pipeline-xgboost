@@ -1,10 +1,10 @@
 # Amazon SageMaker での CI デモ
 
-本サンプルコードは、機械学習モデル開発へのガバナンス強化を目的に、継続的インテグレーションのビルドプロジェクトの中でモデルの学習を行うものです。ビルド中に実行するワークフローは AWS Step Fuinctions で定義してあり、AWS Step Functions Data Science SDK を用いて Python で `pipeline.py` で定義してあります。ワークフロー中でのデータの前処理や学習の実行には Amazon SageMaker を活用しています。 AWS CodeBuild でのビルド仕様は `buildspec.yaml` に定義してあります。
+本サンプルコードは、機械学習モデル開発へのガバナンス強化を目的に、継続的インテグレーションのビルドプロジェクトの中でモデルの学習を行うものです。ビルド中に実行するワークフローは [AWS Step Fuinctions](https://aws.amazon.com/jp/step-functions/) で定義してあり、[AWS Step Functions Data Science SDK](https://docs.aws.amazon.com/ja_jp/step-functions/latest/dg/concepts-python-sdk.html) を用いて Python で `pipeline.py` で定義してあります。ワークフロー中でのデータの前処理や学習の実行には [Amazon SageMaker](https://aws.amazon.com/jp/sagemaker/) を活用しています。 [AWS CodeBuild](https://aws.amazon.com/jp/codebuild/) でのビルド仕様は `buildspec.yaml` に定義してあります。
 
 ## 実行手順
 ### Step1. GtiHub リポジトリをフォークする
-本サンプルコードは GitHub リポジトリと AWS CodeBuild を連携させてビルド中に機械学習モデルの学習を行います。このプロセスはリポジトリへのプッシュをトリガーにするため、 後ほど GitHub のアカウントと CodeBuild の接続が必要になります。その前準備として、このハンズオンの[リポジトリ](https://github.com/tkazusa/sagemaker-xgboost-cicd)をフォークします。
+本サンプルコードは GitHub リポジトリと AWS CodeBuild を連携させてビルド中に機械学習モデルの学習を行います。このプロセスはリポジトリへのプッシュをトリガーにするため、 後ほど GitHub のアカウントと CodeBuild の接続が必要になります。その前準備として、このハンズオンの[リポジトリ](https://github.com/tkazusa/sagemaker-ml-ci-pipeline-xgboost)をフォークします。
 
 
 ### Step2. SageMaker notebook を作成する
