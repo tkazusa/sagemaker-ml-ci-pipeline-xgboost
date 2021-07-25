@@ -1,6 +1,6 @@
 # Amazon SageMaker での CI デモ
 
-本サンプルコードは、機械学習モデル開発へのガバナンス強化を目的に、継続的インテグレーションのビルドプロジェクトの中でモデルの学習を行うものです。ビルド中に実行するワークフローは [AWS Step Fuinctions](https://aws.amazon.com/jp/step-functions/) で定義してあり、[AWS Step Functions Data Science SDK](https://docs.aws.amazon.com/ja_jp/step-functions/latest/dg/concepts-python-sdk.html) を用いて Python で `pipeline.py` で定義してあります。ワークフロー中でのデータの前処理や学習の実行には [Amazon SageMaker](https://aws.amazon.com/jp/sagemaker/) を活用しています。 [AWS CodeBuild](https://aws.amazon.com/jp/codebuild/) でのビルド仕様は `buildspec.yaml` に定義してあります。
+本サンプルコードは、機械学習モデル開発へのガバナンス強化を目的に、継続的インテグレーションのビルドプロジェクトの中でモデルの学習を行うものです。ビルド中に実行するワークフローは [AWS Step Fuinctions](https://aws.amazon.com/jp/step-functions/) で定義してあり、[AWS Step Functions Data Science SDK](https://docs.aws.amazon.com/ja_jp/step-functions/latest/dg/concepts-python-sdk.html) を用いて Python で `pipeline.py` で定義してあります。ワークフロー中でのデータの前処理や学習の実行には[AWS Glue](https://aws.amazon.com/jp/glue/) [Amazon SageMaker](https://aws.amazon.com/jp/sagemaker/) を活用しています。 [AWS CodeBuild](https://aws.amazon.com/jp/codebuild/) でのビルド仕様は `buildspec.yaml` に定義してあります。
 
 ## 実行手順
 ### Step1. GtiHub リポジトリをフォークする
@@ -15,7 +15,7 @@ Amazon SageMaker ノートブックインスタンスを立ち上げます。
 - ノートブックインスタンスが ‘InService’ になるのを確認
 
 
-### Step3. データを Amazon S3 バケットへアップロードする。
+### Step3. データを Amazon S3 バケットへアップロードする
 本ハンズオンでは、ニューヨークのタクシー運賃データを活用します。
 - `dataprep.ipynb` を実行し、末尾のセルを実行した際に表示されているバケット名を保存する。
 
@@ -59,6 +59,11 @@ AWS CodeBuildから、「ビルドプロジェクト」→「ビルドプロジ�
 ![img5](img/img5.png)
 
 
+Buildspec は下記のように指定します。
+
+![img6](img/img6.png)
+
+
 ビルドプロジェクト作成時に作成した `codebuild-sagemaker-ci-pipeline-xgboost-service-role` へ下記のポリシーを追加します。
 
 - `StepFunctionsFullAccess`
@@ -66,7 +71,7 @@ AWS CodeBuildから、「ビルドプロジェクト」→「ビルドプロジ�
 - `AmazonS3FullAccess`
 - `AWSGlueServiceRole`
     
-下記ポリシーを作成して追加します。
+下記インラインポリシーを作成して追加します。
 ```JSON
 {
 	"Version": "2012-10-17",
@@ -94,24 +99,25 @@ $ cd SageMaker/
 $ git checkout -b model-dev
 ```
 
-- `pipeline.py` 中の下記項目を設定します。
+`pipeline.py` 中の下記項目を設定します。
 
 ```Python
-BUCKET='<データを準備した際に保存したバケット>'
-FLOW_NAME='flow_{}'.format(id) 
-TRAINING_JOB_NAME='sf-train-{}'.format(id) # To avoid duplication of job name
+BUCKET = '<データを準備した際に保存したバケット>'
+FLOW_NAME = 'flow_{}'.format(id) 
+TRAINING_JOB_NAME = 'sf-train-{}'.format(id) # To avoid duplication of job name
 GLUE_ROLE = '<Glue に付与するロール>'
 SAGEMAKER_ROLE = '<SageMaker に付与するロール>'
-WORKFLOW_ROLE='<Step Functions に付与するロール>'
+WORKFLOW_ROLE ='<Step Functions に付与するロール>'
 ```
 
-git 上に変更を反映します。
+git 上にて変更を反映します。
+
 ```Bash
 $ git add pipeline.py
 $ git commit -m “mod pipeline.py”
 $ git push origin HEAD
 ```
 
-GitHub リポジトリ上で Pull Request を作成します。
+GitHub リポジトリ上で Pull Request を作成します。ビルドプロジェクトが成功すると下記のような表示が出ます。
 
-
+![img7](img/img7.png)

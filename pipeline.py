@@ -18,13 +18,13 @@ from stepfunctions.workflow import Workflow
 stepfunctions.set_stream_logger(level=logging.INFO)
 id = uuid.uuid4().hex
 
-REGION='us-east-1'
-BUCKET='<データを準備した際に指定したバケット>'
-FLOW_NAME='flow_{}'.format(id) 
-TRAINING_JOB_NAME='sf-train-{}'.format(id) # To avoid duplication of job name
-GLUE_ROLE = '<your-glue-role>'
-SAGEMAKER_ROLE = '<your-sagemaker-role>'
-WORKFLOW_ROLE='<your-stepfunctions-role>'
+REGION = 'us-east-1'
+BUCKET = '<データを準備した際に保存したバケット>'
+FLOW_NAME = 'flow_{}'.format(id) 
+TRAINING_JOB_NAME = 'sf-train-{}'.format(id) # To avoid duplication of job name
+GLUE_ROLE = '<Glue に付与するロール>'
+SAGEMAKER_ROLE = '<SageMaker に付与するロール>'
+WORKFLOW_ROLE ='<Step Functions に付与するロール>'
 
 
 if __name__ == '__main__':
