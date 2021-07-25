@@ -99,7 +99,7 @@ $ cd SageMaker/
 $ git checkout -b model-dev
 ```
 
-- `pipeline.py` 中の下記項目を設定します。
+`pipeline.py` 中の下記項目を設定します。
 
 ```Python
 BUCKET = '<データを準備した際に保存したバケット>'
@@ -111,12 +111,13 @@ WORKFLOW_ROLE ='<Step Functions に付与するロール>'
 ```
 
 git 上にて変更を反映します。
+
 ```Bash
 $ git add pipeline.py
 $ git commit -m “mod pipeline.py”
 $ git push origin HEAD
 ```
 
-GitHub リポジトリ上で Pull Request を作成します。
+GitHub リポジトリ上で Pull Request を作成します。ビルドプロジェクトが成功すると下記のような表示が出ます。
 
-
+![img7](img/img7.png)
