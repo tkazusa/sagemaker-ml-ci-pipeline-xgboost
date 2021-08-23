@@ -23,8 +23,8 @@ Amazon SageMaker ノートブックインスタンスを立ち上げます。
 ### Step4. IAM ロールを作成する
 データの前処理、学習といったステップやパイプラインの実行において AWS リソースが活用する IAM ロールを準備します。 作成するロールは AWS Glue、Amazon SageMaker、AWS Step Functions のための IAM ロールです。ロールの作成については、[こちら](https://docs.aws.amazon.com/ja_jp/IAM/latest/UserGuide/id_roles_create.html)をご確認ください。
 
-AWS Glue と Amazon SageMaker へのロールへは下記のポリシーをそれぞれ付与して下さい。
-- AWS Glue の IAM ロールへ付与するポリシー: `AWSGlueServiceRole`, `S3FullAccess`
+AWS Glue の IAM ロールへは、`AWSGlueServiceRole`, `S3FullAccess` のポリシーを、Amazon SageMaker のロールに対しては `AWSStepFunctionsFullAccess`, `AmazonSageMakerFullAccess` のポリシーを付与して下さい。 AWS StepFunctions へのロールに対しては下記の手順で作成下さい。
+
 - SageMaker の IAM ロールへ付与するポリシー: `AWSStepFunctionsFullAccess`, `AmazonSageMakerFullAccess`
 
 AWS StepFunctions へのロールに対しては下記の手順で作成下さい。
