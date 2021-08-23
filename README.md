@@ -21,12 +21,121 @@ Amazon SageMaker ノートブックインスタンスを立ち上げます。
 
 
 ### Step4. IAM ロールを作成する
-データの前処理、学習といったステップやパイプラインの実行において AWS リソースが活用する IAM ロールを準備します。 IAM ロールの作成については、[こちら](https://docs.aws.amazon.com/ja_jp/IAM/latest/UserGuide/id_roles_create.html)をご確認ください。
+データの前処理、学習といったステップやパイプラインの実行において AWS リソースが活用する IAM ロールを準備します。 作成するロールは AWS Glue、Amazon SageMaker、AWS Step Functions のための IAM ロールです。ロールの作成については、[こちら](https://docs.aws.amazon.com/ja_jp/IAM/latest/UserGuide/id_roles_create.html)をご確認ください。
 
+AWS Glue と Amazon SageMaker へのロールへは下記のポリシーをそれぞれ付与して下さい。
 - AWS Glue の IAM ロールへ付与するポリシー: `AWSGlueServiceRole`, `S3FullAccess`
 - SageMaker の IAM ロールへ付与するポリシー: `AWSStepFunctionsFullAccess`, `AmazonSageMakerFullAccess`
-- AWS StepFunctions の IAM ロールへ付与するポリシー: `AWSGlueServiceRole`, `AmazonSageMakerFullAccess`, `AWSStepFunctionsFullAccess`
-    
+
+AWS StepFunctions へのロールに対しては下記の手順で作成下さい。
+
+1. [IAM console](https://console.aws.amazon.com/iam/) にアクセス
+2. 左側のメニューの **ロール** を選択し **ロールの作成** をクリック
+3. **ユースケースの選択** で **Step Functions** をクリック
+4. **次のステップ：アクセス権限** **次のステップ：タグ** **次のステップ：確認**をクリック
+5. **ロール名** に `AmazonSageMaker-StepFunctionsWorkflowExecutionRole` と入力して **ロールの作成** をクリック
+
+次に、作成したロールに AWS マネージド IAM ポリシーをアタッチします。
+
+1. [IAM console](https://console.aws.amazon.com/iam/) にアクセス
+2. 左側のメニューの **ロール** を選択
+3. 先ほど作成した `AmazonSageMaker-StepFunctionsWorkflowExecutionRole`を検索
+4. **ポリシーをアタッチします** をクリックして `CloudWatchEventsFullAccess` を検索
+5. `CloudWatchEventsFullAccess` の横のチェックボックスをオンにして **ポリシーのアタッチ** をクリック
+
+次に、別の新しいポリシーをロールにアタッチします。ベストプラクティスとして、以下のステップで特定のリソースのみのアクセス権限とこのサンプルを実行するのに必要なアクションのみを有効にします。
+
+1. 左側のメニューの **ロール** を選択
+1. 先ほど作成した `AmazonSageMaker-StepFunctionsWorkflowExecutionRole`を検索
+1. **ポリシーをアタッチします** をクリックして **ポリシーの作成** をクリック
+1. **JSON** タブをクリックして以下の内容をペースト<br>
+NOTEBOOK_ROLE_ARN の部分をノートブックインスタンスで使用している IAM ロールの ARN に置き換えてください。
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "events:PutTargets",
+                "events:DescribeRule",
+                "events:PutRule"
+            ],
+            "Resource": [
+                "arn:aws:events:*:*:rule/StepFunctionsGetEventsForSageMakerTrainingJobsRule",
+                "arn:aws:events:*:*:rule/StepFunctionsGetEventsForSageMakerTransformJobsRule",
+                "arn:aws:events:*:*:rule/StepFunctionsGetEventsForSageMakerTuningJobsRule",
+                "arn:aws:events:*:*:rule/StepFunctionsGetEventsForECSTaskRule",
+                "arn:aws:events:*:*:rule/StepFunctionsGetEventsForBatchJobsRule"
+            ]
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": "iam:PassRole",
+            "Resource": "NOTEBOOK_ROLE_ARN",
+            "Condition": {
+                "StringEquals": {
+                    "iam:PassedToService": "sagemaker.amazonaws.com"
+                }
+            }
+        },
+        {
+            "Sid": "VisualEditor2",
+            "Effect": "Allow",
+            "Action": [
+                "batch:DescribeJobs",
+                "batch:SubmitJob",
+                "batch:TerminateJob",
+                "dynamodb:DeleteItem",
+                "dynamodb:GetItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "ecs:DescribeTasks",
+                "ecs:RunTask",
+                "ecs:StopTask",
+                "glue:BatchStopJobRun",
+                "glue:GetJobRun",
+                "glue:GetJobRuns",
+                "glue:StartJobRun",
+                "lambda:InvokeFunction",
+                "sagemaker:CreateEndpoint",
+                "sagemaker:CreateEndpointConfig",
+                "sagemaker:CreateHyperParameterTuningJob",
+                "sagemaker:CreateModel",
+                "sagemaker:CreateProcessingJob",
+                "sagemaker:CreateTrainingJob",
+                "sagemaker:CreateTransformJob",
+                "sagemaker:DeleteEndpoint",
+                "sagemaker:DeleteEndpointConfig",
+                "sagemaker:DescribeHyperParameterTuningJob",
+                "sagemaker:DescribeProcessingJob",
+                "sagemaker:DescribeTrainingJob",
+                "sagemaker:DescribeTransformJob",
+                "sagemaker:ListProcessingJobs",
+                "sagemaker:ListTags",
+                "sagemaker:StopHyperParameterTuningJob",
+                "sagemaker:StopProcessingJob",
+                "sagemaker:StopTrainingJob",
+                "sagemaker:StopTransformJob",
+                "sagemaker:UpdateEndpoint",
+                "sns:Publish",
+                "sqs:SendMessage"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+5. **次のステップ：タグ** **次のステップ：確認**をクリック
+6. **名前** に `AmazonSageMaker-StepFunctionsWorkflowExecutionPolicy` と入力して **ポリシーの作成** をクリック
+7. 左側のメニューで **ロール** を選択して `AmazonSageMaker-StepFunctionsWorkflowExecutionRole` を検索
+8. **ポリシーをアタッチします** をクリック
+9. 前の手順で作成した `AmazonSageMaker-StepFunctionsWorkflowExecutionPolicy` ポリシーを検索してチェックボックスをオンにして **ポリシーのアタッチ** をクリック
+11. AmazonSageMaker-StepFunctionsWorkflowExecutionRole の *Role ARN** をコピーして以下のセルにペースト
   
 それぞれ作成したロールの ARN は後ほど活用するので保存しておいて下さい。
 
