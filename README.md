@@ -63,6 +63,8 @@ Buildspec は下記のように指定します。
 
 ![img6](img/img6.png)
 
+ビルドプロジェクトを作成します。
+
 
 ビルドプロジェクト作成時に作成した `codebuild-sagemaker-ci-pipeline-xgboost-service-role` へ下記のポリシーを追加します。
 
