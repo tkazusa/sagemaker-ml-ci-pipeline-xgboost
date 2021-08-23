@@ -68,7 +68,7 @@ Buildspec は下記のように指定します。
 
 ビルドプロジェクト作成時に作成した `codebuild-sagemaker-ci-pipeline-xgboost-service-role` へ下記のポリシーを追加します。
 
-- `StepFunctionsFullAccess`
+- `AWSStepFunctionsFullAccess`
 - `AWSCodebuildDeveloperAccess`
 - `AmazonS3FullAccess`
 - `AWSGlueServiceRole`
