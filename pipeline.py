@@ -15,8 +15,10 @@ from stepfunctions import steps
 from stepfunctions.inputs import ExecutionInput
 from stepfunctions.workflow import Workflow
 
+
 stepfunctions.set_stream_logger(level=logging.INFO)
 id = uuid.uuid4().hex
+
 
 REGION = 'us-east-1'
 BUCKET = 'sagemaker-cicd-20210823-111858'
