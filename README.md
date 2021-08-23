@@ -97,7 +97,7 @@ SageMaker Notebook 上からスクリプトへの変更を実行し、プルリ�
 - ターミナルを起動して、新しいブランチ `model-dev` を作成し、チェックアウトします。
 
 ```Bash
-$ cd SageMaker/
+$ cd SageMaker/sagemaker-ml-ci-pipeline-xgboost/
 $ git checkout -b model-dev
 ```
 
