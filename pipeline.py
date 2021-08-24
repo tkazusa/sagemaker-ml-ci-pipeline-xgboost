@@ -29,6 +29,7 @@ SAGEMAKER_ROLE = 'arn:aws:iam::815969174475:role/ci-sagemaker-test'
 WORKFLOW_ROLE ='arn:aws:iam::815969174475:role/ci-sfn-test'
 
 
+
 if __name__ == '__main__':
     # buildspec.yaml の env.variables へ直接書き込んでだ場合、下記のように環境変数から設定を読み込んでくる
     #parser = argparse.ArgumentParser()
