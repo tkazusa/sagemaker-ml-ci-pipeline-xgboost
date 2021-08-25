@@ -15,16 +15,20 @@ from stepfunctions import steps
 from stepfunctions.inputs import ExecutionInput
 from stepfunctions.workflow import Workflow
 
+
 stepfunctions.set_stream_logger(level=logging.INFO)
 id = uuid.uuid4().hex
 
+
 REGION = 'us-east-1'
-BUCKET = '<データを準備した際に保存したバケット>'
+BUCKET = 'sagemaker-cicd-20210823-111858'
 FLOW_NAME = 'flow_{}'.format(id) 
 TRAINING_JOB_NAME = 'sf-train-{}'.format(id) # To avoid duplication of job name
-GLUE_ROLE = '<Glue に付与するロール>'
-SAGEMAKER_ROLE = '<SageMaker に付与するロール>'
-WORKFLOW_ROLE ='<Step Functions に付与するロール>'
+GLUE_ROLE = 'arn:aws:iam::815969174475:role/ci-glue-test'
+SAGEMAKER_ROLE = 'arn:aws:iam::815969174475:role/ci-sagemaker-test'
+WORKFLOW_ROLE ='arn:aws:iam::815969174475:role/ci-sfn-test'
+
+
 
 
 if __name__ == '__main__':
